@@ -4,13 +4,13 @@ A modern implementation of the classic Pong game with a unique 4-paddle twist. B
 
 ## Features
 
-### 🎮 Unique Gameplay
+### Gameplay
 - **4-Paddle System**: Control all four paddles simultaneously with synchronized movement
 - **Lives System**: Start with 3 lives, lose one when the ball hits any wall
 - **Reserve Team**: Get a second chance with increased difficulty when all lives are lost
 - **Progressive Difficulty**: Ball speed increases with each paddle hit
 
-### 🎯 Game Controls
+### Controls
 - **Arrow Keys**: ↑↓ control left/right paddles, ←→ control top/bottom paddles
 - **WASD Alternative**: W/S for left/right paddles, A/D for top/bottom paddles  
 - **SPACE**: Pause/resume game
@@ -19,7 +19,7 @@ A modern implementation of the classic Pong game with a unique 4-paddle twist. B
 - **Y/N**: Accept/decline reserve team when offered
 - **Z**: Visit the zoo (pauses game or gives up from game over)
 
-### 🛠 Technical Features
+### Technical Features
 - **Clean Architecture**: Modular design with separate GameState, InputHandler, and Renderer
 - **60fps Performance**: Smooth gameplay with deltaTime-based physics
 - **Network-Ready**: State management designed for future multiplayer support
