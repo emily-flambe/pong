@@ -4,8 +4,16 @@ compatibility_date = "2025-01-01"
 [assets]
 directory = "./public"
 
+# Custom domain routes
+routes = [
+  { pattern = "pong.emilycogsdill.com", custom_domain = true }
+]
+
 [[env.production]]
 name = "pong-game-prod"
+routes = [
+  { pattern = "pong.emilycogsdill.com", custom_domain = true }
+]
 
 [[env.staging]]
 name = "pong-game-staging"
