@@ -71,6 +71,63 @@
         .game-controls {
             margin-top: 20px;
         }
+        
+        .instructions-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 30px;
+            border: 2px solid #fff;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            z-index: 1000;
+            max-width: 600px;
+            text-align: left;
+        }
+        
+        .canvas-container {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .instructions-overlay.hidden {
+            display: none;
+        }
+        
+        .instructions-overlay h3 {
+            color: #4CAF50;
+            margin: 0 0 15px 0;
+            font-size: 16px;
+            text-align: center;
+        }
+        
+        .instructions-section {
+            margin-bottom: 20px;
+        }
+        
+        .instructions-section:last-child {
+            margin-bottom: 0;
+        }
+        
+        .instructions-overlay h4 {
+            color: #4CAF50;
+            margin: 0 0 8px 0;
+            font-size: 14px;
+        }
+        
+        .instructions-overlay ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        
+        .instructions-overlay li {
+            margin: 4px 0;
+        }
 
         button {
             background-color: #333;
@@ -138,32 +195,42 @@
         <p>Control all four paddles simultaneously to keep the ball in play. You have 3 lives - lose one each time the ball hits a wall. Score points when the ball hits any paddle!</p>
     </div>
     
-    <div class="controls">
-        <div class="control-section">
-            <h4>Arrow Keys Control:</h4>
-            <p>↑↓ Up/Down Arrows - Move Left & Right paddles vertically</p>
-            <p>←→ Left/Right Arrows - Move Top & Bottom paddles horizontally</p>
-        </div>
+    <div class="canvas-container">
+        <canvas id="gameCanvas" width="800" height="600">
+            Your browser does not support the HTML5 Canvas element.
+        </canvas>
         
-        <div class="control-section">
-            <h4>WASD Alternative:</h4>
-            <p>W/S Keys - Move Left & Right paddles vertically</p>
-            <p>A/D Keys - Move Top & Bottom paddles horizontally</p>
-        </div>
-        
-        <div class="control-section">
-            <h4>Game Rules:</h4>
-            <p>• Start with 3 lives</p>
-            <p>• Lose a life when ball hits any wall</p>
-            <p>• Score +1 point when ball hits any paddle</p>
-            <p>• All paddles move together in synchronized pairs</p>
-            <p>• ENTER key starts game, SPACEBAR pauses</p>
+        <div class="instructions-overlay" id="instructionsOverlay">
+            <h3>4-PADDLE PONG CONTROLS</h3>
+            
+            <div class="instructions-section">
+                <h4>Arrow Keys Control:</h4>
+                <ul>
+                    <li>↑↓ Up/Down Arrows - Move Left & Right paddles vertically</li>
+                    <li>←→ Left/Right Arrows - Move Top & Bottom paddles horizontally</li>
+                </ul>
+            </div>
+            
+            <div class="instructions-section">
+                <h4>WASD Alternative:</h4>
+                <ul>
+                    <li>W/S Keys - Move Left & Right paddles vertically</li>
+                    <li>A/D Keys - Move Top & Bottom paddles horizontally</li>
+                </ul>
+            </div>
+            
+            <div class="instructions-section">
+                <h4>Game Rules:</h4>
+                <ul>
+                    <li>Start with 3 lives</li>
+                    <li>Lose a life when ball hits any wall</li>
+                    <li>Score +1 point when ball hits any paddle</li>
+                    <li>All paddles move together in synchronized pairs</li>
+                    <li>ENTER key starts game, SPACEBAR pauses</li>
+                </ul>
+            </div>
         </div>
     </div>
-
-    <canvas id="gameCanvas" width="800" height="600">
-        Your browser does not support the HTML5 Canvas element.
-    </canvas>
 
     <div class="error-message" id="errorMessage"></div>
 
@@ -229,6 +296,9 @@
             }
 
             try {
+                // Hide instructions overlay when game starts
+                hideInstructions();
+                
                 game.start();
                 updateGameInfo('4-Paddle Pong running! Use arrow keys or WASD to control all paddles.');
                 document.getElementById('startBtn').textContent = 'Resume';
@@ -256,6 +326,8 @@
                 game.reset();
                 updateGameInfo('4-Paddle Pong reset. Press Start or ENTER to play!');
                 document.getElementById('startBtn').textContent = 'Start';
+                // Show instructions overlay again when game is reset
+                showInstructions();
             }
         }
 
@@ -317,6 +389,20 @@
          */
         function hideError() {
             document.getElementById('errorMessage').style.display = 'none';
+        }
+
+        /**
+         * Hide instructions overlay
+         */
+        function hideInstructions() {
+            document.getElementById('instructionsOverlay').classList.add('hidden');
+        }
+
+        /**
+         * Show instructions overlay
+         */
+        function showInstructions() {
+            document.getElementById('instructionsOverlay').classList.remove('hidden');
         }
 
         // Initialize game when DOM is loaded

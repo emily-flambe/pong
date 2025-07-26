@@ -61,6 +61,10 @@ class Game {
             // Enter key starts the game
             if (e.code === 'Enter' && !this.isRunning && !this.gameState.isGameOver()) {
                 e.preventDefault();
+                // Hide instructions overlay when starting with Enter key
+                if (typeof hideInstructions === 'function') {
+                    hideInstructions();
+                }
                 this.start();
             }
             // Spacebar pauses/resumes the game
@@ -159,6 +163,11 @@ class Game {
         this.gameState.reset();
         this.previousGameOverState = false;
         this.renderer.clear();
+        
+        // Show instructions overlay again when game is reset
+        if (typeof showInstructions === 'function') {
+            showInstructions();
+        }
     }
 
     /**
