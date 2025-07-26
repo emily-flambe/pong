@@ -10,7 +10,7 @@ class Renderer {
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
         
         // Draw bounds/field
-        this.drawBounds(gameState.bounds);
+        this.drawBounds(gameState.gameConfig);
         
         // Draw ball
         this.drawBall(gameState.ball);
@@ -18,19 +18,19 @@ class Renderer {
         // Draw paddle
         this.drawPaddle(gameState.paddle);
         
-        // Draw score
-        this.drawScore(gameState.score);
+        // Draw score (placeholder for now)
+        this.drawScore(0);
     }
     
-    drawBounds(bounds) {
+    drawBounds(gameConfig) {
         this.ctx.strokeStyle = '#fff';
         this.ctx.lineWidth = 2;
         this.ctx.setLineDash([5, 5]);
         
         // Center line
         this.ctx.beginPath();
-        this.ctx.moveTo(bounds.width / 2, 0);
-        this.ctx.lineTo(bounds.width / 2, bounds.height);
+        this.ctx.moveTo(gameConfig.width / 2, 0);
+        this.ctx.lineTo(gameConfig.width / 2, gameConfig.height);
         this.ctx.stroke();
         
         this.ctx.setLineDash([]);

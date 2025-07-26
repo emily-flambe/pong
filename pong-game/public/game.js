@@ -14,6 +14,9 @@ class Game {
         this.lastTime = 0;
         this.isRunning = false;
         
+        // Start the game state
+        this.gameState.start();
+        
         this.start();
     }
     
