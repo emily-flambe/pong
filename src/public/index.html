@@ -7,14 +7,14 @@
     <style>
         body {
             margin: 0;
-            padding: 20px;
+            padding: 10px;
             background-color: #000;
             color: #fff;
             font-family: 'Courier New', monospace;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start;
             min-height: 100vh;
         }
 
@@ -22,12 +22,13 @@
             border: 2px solid #fff;
             background-color: #000;
             display: block;
-            margin: 20px 0;
+            margin: 10px 0;
+            transform: scale(0.95);
         }
 
         .game-info {
             text-align: center;
-            margin: 10px 0;
+            margin: 5px 0;
         }
 
         .controls {
@@ -64,29 +65,29 @@
         }
 
         .game-title {
-            font-size: 24px;
-            margin-bottom: 10px;
+            font-size: 23px;
+            margin-bottom: 5px;
         }
 
         .game-controls {
-            margin-top: 20px;
+            margin-top: 10px;
         }
         
         .instructions-overlay {
             position: absolute;
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%) scale(0.95);
             background-color: rgba(0, 0, 0, 0.9);
             color: white;
-            padding: 30px;
+            padding: 28px;
             border: 2px solid #fff;
             border-radius: 8px;
             font-family: 'Courier New', monospace;
-            font-size: 14px;
-            line-height: 1.6;
+            font-size: 13px;
+            line-height: 1.5;
             z-index: 1000;
-            max-width: 600px;
+            max-width: 570px;
             text-align: left;
         }
         
@@ -190,10 +191,6 @@
 <body>
     <div class="game-title">4-PADDLE PONG</div>
     
-    <div class="game-description">
-        <p><strong>Challenge yourself with 4 synchronized paddles!</strong></p>
-        <p>Control all four paddles simultaneously to keep the ball in play. You have 3 lives - lose one each time the ball hits a wall. Score points when the ball hits any paddle!</p>
-    </div>
     
     <div class="canvas-container">
         <canvas id="gameCanvas" width="800" height="600">

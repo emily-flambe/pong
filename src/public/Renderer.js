@@ -95,6 +95,11 @@ class Renderer {
         if (gameState.gameOver) {
             this.drawGameOverScreen(gameState.finalScore, gameState.lives);
         }
+        
+        // Draw paused screen if game is not running but not game over
+        if (gameState.gameConfig && !gameState.gameConfig.isRunning && !gameState.gameOver) {
+            this.drawPausedScreen();
+        }
     }
     
     /**
@@ -377,6 +382,27 @@ class Renderer {
         this.ctx.font = '20px monospace';
         this.ctx.fillStyle = '#FFFFFF';
         this.ctx.fillText('Click "Play Again" to restart', this.canvas.width / 2, this.canvas.height / 2 + 80);
+    }
+    
+    /**
+     * Draw paused overlay screen
+     */
+    drawPausedScreen() {
+        // Draw semi-transparent overlay
+        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        
+        // Paused text
+        this.ctx.fillStyle = '#FFFFFF';
+        this.ctx.font = 'bold 48px monospace';
+        this.ctx.textAlign = 'center';
+        this.ctx.textBaseline = 'middle';
+        this.ctx.fillText('PAUSED', this.canvas.width / 2, this.canvas.height / 2);
+        
+        // Resume instruction
+        this.ctx.font = '20px monospace';
+        this.ctx.fillStyle = '#CCCCCC';
+        this.ctx.fillText('Press SPACEBAR to resume', this.canvas.width / 2, this.canvas.height / 2 + 50);
     }
     
     /**

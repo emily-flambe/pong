@@ -68,9 +68,13 @@ class Game {
                 this.start();
             }
             // Spacebar pauses/resumes the game
-            else if (e.code === 'Space' && this.isRunning) {
+            else if (e.code === 'Space') {
                 e.preventDefault();
-                this.pause();
+                if (this.isRunning) {
+                    this.pause();
+                } else if (!this.gameState.isGameOver()) {
+                    this.resume();
+                }
             }
         });
 
