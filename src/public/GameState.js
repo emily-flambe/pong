@@ -17,6 +17,11 @@ class GameState {
     
     // Initialize paddle
     this.paddle = this.createInitialPaddle();
+    
+    // Initialize score and game state
+    this.score = 0;
+    this.gameOver = false;
+    this.finalScore = 0;
   }
 
   /**
@@ -33,7 +38,9 @@ class GameState {
       velocityX: Math.cos(angle) * speed,
       velocityY: Math.sin(angle) * speed,
       radius: 10,
-      speed: speed
+      speed: speed,
+      baseSpeed: speed, // Store original speed for reference
+      maxSpeed: 700 // Maximum speed limit to prevent unplayable speeds
     };
   }
 
@@ -61,7 +68,7 @@ class GameState {
    * @param {Object} inputState - Current input state {up: boolean, down: boolean}
    */
   update(deltaTime, inputState = {}) {
-    if (!this.gameConfig.isRunning) {
+    if (!this.gameConfig.isRunning || this.gameOver) {
       return;
     }
 
@@ -73,6 +80,9 @@ class GameState {
     
     // Check collisions
     this.checkCollisions();
+    
+    // Check for game over condition
+    this.checkGameOver();
   }
 
   /**
@@ -122,7 +132,20 @@ class GameState {
   }
 
   /**
-   * Handles ball collision with all four walls (single-player mode)
+   * Checks if the ball has passed the right edge (missed paddle)
+   * Sets game over state when ball passes right boundary
+   */
+  checkGameOver() {
+    // Game over when ball passes right edge (misses paddle)
+    if (this.ball.x - this.ball.radius > this.gameConfig.width) {
+      this.gameOver = true;
+      this.gameConfig.isRunning = false;
+      this.finalScore = this.score; // Preserve final score
+    }
+  }
+
+  /**
+   * Handles ball collision with walls (modified for game over mechanics)
    */
   checkWallCollisions() {
     // Top wall collision
@@ -143,15 +166,13 @@ class GameState {
       this.ball.velocityX = Math.abs(this.ball.velocityX);
     }
     
-    // Right wall collision (behind paddle area)
-    if (this.ball.x + this.ball.radius >= this.gameConfig.width) {
-      this.ball.x = this.gameConfig.width - this.ball.radius;
-      this.ball.velocityX = -Math.abs(this.ball.velocityX);
-    }
+    // Note: Right wall collision removed - ball should pass through to trigger game over
+    // Game over detection is handled in checkGameOver() method
   }
 
   /**
    * Handles ball collision with paddle using AABB detection
+   * Increases ball speed by 7% on each paddle hit (capped at maxSpeed)
    */
   checkPaddleCollision() {
     // AABB collision detection
@@ -172,28 +193,41 @@ class GameState {
         ballTop <= paddleBottom &&
         this.ball.velocityX > 0) { // Only bounce if moving toward paddle
       
+      // Increase ball speed by 7% on paddle hit, but cap at maxSpeed
+      const speedMultiplier = 1.07;
+      const newSpeed = Math.min(this.ball.speed * speedMultiplier, this.ball.maxSpeed);
+      
       // Calculate hit position (0 = top of paddle, 1 = bottom of paddle)
       const hitPos = (this.ball.y - paddleTop) / this.paddle.height;
       
       // Calculate bounce angle based on hit position (max 60 degrees)
       const bounceAngle = (hitPos - 0.5) * Math.PI / 3;
       
-      // Reverse X direction and apply angle to Y velocity
+      // Update ball speed
+      this.ball.speed = newSpeed;
+      
+      // Apply new speed with bounce angle, maintaining physics consistency
+      this.ball.velocityX = -Math.cos(bounceAngle) * newSpeed;
+      this.ball.velocityY = Math.sin(bounceAngle) * newSpeed;
+      
+      // Ensure X direction is always away from paddle (negative)
       this.ball.velocityX = -Math.abs(this.ball.velocityX);
-      this.ball.velocityY = Math.sin(bounceAngle) * this.ball.speed;
       
       // Move ball away from paddle to prevent sticking
       this.ball.x = paddleLeft - this.ball.radius - 1;
+      
+      // Increment score on successful paddle hit
+      this.score += 10;
     }
   }
 
   /**
-   * Checks if ball has passed the left edge and resets if needed
+   * Triggers game over state
    */
-  checkBallReset() {
-    if (this.ball.x + this.ball.radius < 0) {
-      this.resetBall();
-    }
+  triggerGameOver() {
+    this.gameOver = true;
+    this.finalScore = this.score;
+    this.gameConfig.isRunning = false;
   }
 
   /**
@@ -211,7 +245,10 @@ class GameState {
     return {
       ball: { ...this.ball },
       paddle: { ...this.paddle },
-      gameConfig: { ...this.gameConfig }
+      gameConfig: { ...this.gameConfig },
+      score: this.score,
+      gameOver: this.gameOver,
+      finalScore: this.finalScore
     };
   }
 
@@ -229,6 +266,15 @@ class GameState {
     if (state.gameConfig) {
       this.gameConfig = { ...state.gameConfig };
     }
+    if (state.score !== undefined) {
+      this.score = state.score;
+    }
+    if (state.gameOver !== undefined) {
+      this.gameOver = state.gameOver;
+    }
+    if (state.finalScore !== undefined) {
+      this.finalScore = state.finalScore;
+    }
   }
 
   /**
@@ -237,6 +283,9 @@ class GameState {
   reset() {
     this.ball = this.createInitialBall();
     this.paddle = this.createInitialPaddle();
+    this.score = 0;
+    this.gameOver = false;
+    this.finalScore = 0;
     this.gameConfig.isRunning = false;
   }
 
@@ -261,6 +310,31 @@ class GameState {
   isRunning() {
     return this.gameConfig.isRunning;
   }
+
+  /**
+   * Gets current game over state
+   * @returns {boolean} True if game is over
+   */
+  isGameOver() {
+    return this.gameOver;
+  }
+
+  /**
+   * Gets the final score (preserved when game is over)
+   * @returns {number} Final score when game ended
+   */
+  getFinalScore() {
+    return this.finalScore;
+  }
+
+  /**
+   * Gets the current score
+   * @returns {number} Current score
+   */
+  getScore() {
+    return this.score;
+  }
+
 }
 
 // Export for both Node.js and browser environments
