@@ -91,13 +91,16 @@ class Renderer {
             this.drawLives(gameState.lives);
         }
         
+        // Draw reserve team option if applicable
+        if (gameState.showReserveTeamOption) {
+            this.drawReserveTeamScreen(gameState.score);
+        }
         // Draw game over screen if applicable
-        if (gameState.gameOver) {
+        else if (gameState.gameOver) {
             this.drawGameOverScreen(gameState.finalScore, gameState.lives);
         }
-        
-        // Draw paused screen if game is not running but not game over
-        if (gameState.gameConfig && !gameState.gameConfig.isRunning && !gameState.gameOver) {
+        // Draw paused screen if game is not running but not game over and not showing reserve team option
+        else if (gameState.gameConfig && !gameState.gameConfig.isRunning && !gameState.gameOver && !gameState.showReserveTeamOption) {
             this.drawPausedScreen();
         }
     }
@@ -354,34 +357,22 @@ class Renderer {
         this.ctx.font = 'bold 64px monospace';
         this.ctx.textAlign = 'center';
         this.ctx.textBaseline = 'middle';
-        this.ctx.fillText('WASTED', this.canvas.width / 2, this.canvas.height / 2 - 100);
+        this.ctx.fillText('WASTED', this.canvas.width / 2, this.canvas.height / 2 - 60);
         
         // Final Score text
+        this.ctx.fillStyle = '#FFFFFF';
         this.ctx.font = '32px monospace';
-        this.ctx.fillText(`Final Score: ${finalScore}`, this.canvas.width / 2, this.canvas.height / 2 - 40);
-        
-        // Lives information (if applicable)
-        if (typeof lives === 'number') {
-            this.ctx.font = '24px monospace';
-            if (lives === 0) {
-                this.ctx.fillStyle = '#FF6B6B'; // Red for no lives
-                this.ctx.fillText('All lives lost!', this.canvas.width / 2, this.canvas.height / 2);
-            } else {
-                this.ctx.fillStyle = '#FFD93D'; // Yellow for remaining lives
-                this.ctx.fillText(`Lives remaining: ${lives}`, this.canvas.width / 2, this.canvas.height / 2);
-            }
-            this.ctx.fillStyle = '#FFFFFF'; // Reset to white
-        }
-        
-        // Game mode indicator for 4-paddle system
-        this.ctx.font = '18px monospace';
-        this.ctx.fillStyle = '#CCCCCC';
-        this.ctx.fillText('4-Paddle Pong Challenge', this.canvas.width / 2, this.canvas.height / 2 + 40);
+        this.ctx.fillText(`Final Score: ${finalScore}`, this.canvas.width / 2, this.canvas.height / 2);
         
         // Play Again instruction
         this.ctx.font = '20px monospace';
-        this.ctx.fillStyle = '#FFFFFF';
-        this.ctx.fillText('Click "Play Again" to restart', this.canvas.width / 2, this.canvas.height / 2 + 80);
+        this.ctx.fillStyle = '#4CAF50';
+        this.ctx.fillText('Press ENTER to Play Again', this.canvas.width / 2, this.canvas.height / 2 + 50);
+        
+        // Give up instruction
+        this.ctx.font = '16px monospace';
+        this.ctx.fillStyle = '#FFD700';
+        this.ctx.fillText('Press Z to give up', this.canvas.width / 2, this.canvas.height / 2 + 80);
     }
     
     /**
@@ -403,6 +394,41 @@ class Renderer {
         this.ctx.font = '20px monospace';
         this.ctx.fillStyle = '#CCCCCC';
         this.ctx.fillText('Press SPACEBAR to resume', this.canvas.width / 2, this.canvas.height / 2 + 50);
+    }
+    
+    /**
+     * Draw reserve team option screen
+     */
+    drawReserveTeamScreen(currentScore) {
+        // Draw semi-transparent overlay
+        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.85)';
+        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        
+        // WASTED text
+        this.ctx.fillStyle = '#FF0000';
+        this.ctx.font = 'bold 64px monospace';
+        this.ctx.textAlign = 'center';
+        this.ctx.textBaseline = 'middle';
+        this.ctx.fillText('WASTED', this.canvas.width / 2, this.canvas.height / 2 - 80);
+        
+        // Current score
+        this.ctx.font = '32px monospace';
+        this.ctx.fillStyle = '#FFFFFF';
+        this.ctx.fillText(`Score: ${currentScore}`, this.canvas.width / 2, this.canvas.height / 2 - 20);
+        
+        // Main question
+        this.ctx.fillStyle = '#FFFFFF';
+        this.ctx.font = 'bold 28px monospace';
+        this.ctx.fillText('Send in Reserve Team?', this.canvas.width / 2, this.canvas.height / 2 + 30);
+        
+        // Yes option
+        this.ctx.font = '24px monospace';
+        this.ctx.fillStyle = '#4CAF50';
+        this.ctx.fillText('[Y]es', this.canvas.width / 2 - 60, this.canvas.height / 2 + 70);
+        
+        // No option
+        this.ctx.fillStyle = '#FF6B6B';
+        this.ctx.fillText('[N]o', this.canvas.width / 2 + 60, this.canvas.height / 2 + 70);
     }
     
     /**

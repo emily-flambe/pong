@@ -24,6 +24,8 @@ class GameState {
     this.lives = 3; // 3-life system
     this.gameOver = false;
     this.finalScore = 0;
+    this.reserveTeamUsed = false; // Track if reserve team has been used
+    this.showReserveTeamOption = false; // Show reserve team dialog
   }
 
   /**
@@ -203,13 +205,20 @@ class GameState {
 
   /**
    * Checks for game over condition based on lives system
-   * Game over when lives reach 0
+   * Game over when lives reach 0, but offer reserve team if not used
    */
   checkGameOver() {
     if (this.lives <= 0) {
-      this.gameOver = true;
-      this.gameConfig.isRunning = false;
-      this.finalScore = this.score; // Preserve final score
+      if (!this.reserveTeamUsed) {
+        // Offer reserve team option
+        this.showReserveTeamOption = true;
+        this.gameConfig.isRunning = false;
+      } else {
+        // Final game over
+        this.gameOver = true;
+        this.gameConfig.isRunning = false;
+        this.finalScore = this.score; // Preserve final score
+      }
     }
   }
 
@@ -420,6 +429,8 @@ class GameState {
     this.lives = 3;
     this.gameOver = false;
     this.finalScore = 0;
+    this.reserveTeamUsed = false;
+    this.showReserveTeamOption = false;
     this.gameConfig.isRunning = false;
   }
 
@@ -451,6 +462,54 @@ class GameState {
    */
   isGameOver() {
     return this.gameOver;
+  }
+
+  /**
+   * Gets reserve team option state
+   * @returns {boolean} True if showing reserve team option
+   */
+  isShowingReserveTeamOption() {
+    return this.showReserveTeamOption;
+  }
+
+  /**
+   * Activates reserve team with harder difficulty
+   */
+  activateReserveTeam() {
+    this.reserveTeamUsed = true;
+    this.showReserveTeamOption = false;
+    this.lives = 1; // One more life
+    
+    // Make ball much faster
+    this.ball.speed *= 1.6;
+    this.ball.maxSpeed *= 1.6;
+    
+    // Make paddles much smaller and faster
+    this.paddles.left.height *= 0.5;
+    this.paddles.right.height *= 0.5;
+    this.paddles.top.width *= 0.5;
+    this.paddles.bottom.width *= 0.5;
+    
+    // Increase paddle speed
+    this.paddles.left.speed *= 1.3;
+    this.paddles.right.speed *= 1.3;
+    this.paddles.top.speed *= 1.3;
+    this.paddles.bottom.speed *= 1.3;
+    
+    // Reset ball position and prepare for immediate start
+    this.resetBall();
+    
+    // Ensure game is ready to run
+    this.gameConfig.isRunning = true;
+  }
+
+  /**
+   * Declines reserve team, goes to final game over
+   */
+  declineReserveTeam() {
+    this.showReserveTeamOption = false;
+    this.gameOver = true;
+    this.finalScore = this.score;
   }
 
   /**

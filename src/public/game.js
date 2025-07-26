@@ -58,22 +58,69 @@ class Game {
         
         // Add global keyboard listeners for game control
         document.addEventListener('keydown', (e) => {
-            // Enter key starts the game
-            if (e.code === 'Enter' && !this.isRunning && !this.gameState.isGameOver()) {
+            // Enter key starts the game or restarts after game over
+            if (e.code === 'Enter' && !this.isRunning && !this.gameState.isShowingReserveTeamOption()) {
                 e.preventDefault();
-                // Hide instructions overlay when starting with Enter key
-                if (typeof hideInstructions === 'function') {
-                    hideInstructions();
+                if (this.gameState.isGameOver()) {
+                    // Restart after game over - don't show controls popup
+                    this.reset();
+                    if (typeof hideInstructions === 'function') {
+                        hideInstructions();
+                    }
+                    this.start();
+                } else {
+                    // Normal start - hide instructions overlay
+                    if (typeof hideInstructions === 'function') {
+                        hideInstructions();
+                    }
+                    this.start();
                 }
-                this.start();
             }
             // Spacebar pauses/resumes the game
             else if (e.code === 'Space') {
                 e.preventDefault();
                 if (this.isRunning) {
                     this.pause();
-                } else if (!this.gameState.isGameOver()) {
+                } else if (!this.gameState.isGameOver() && !this.gameState.isShowingReserveTeamOption()) {
                     this.resume();
+                }
+            }
+            // ESC key resets the game
+            else if (e.code === 'Escape') {
+                e.preventDefault();
+                this.stop();
+                this.reset();
+                if (typeof showInstructions === 'function') {
+                    showInstructions();
+                }
+            }
+            // Y key - Yes to reserve team
+            else if (e.code === 'KeyY' && this.gameState.isShowingReserveTeamOption()) {
+                e.preventDefault();
+                this.gameState.activateReserveTeam();
+                this.resume();
+            }
+            // N key - No to reserve team  
+            else if (e.code === 'KeyN' && this.gameState.isShowingReserveTeamOption()) {
+                e.preventDefault();
+                this.gameState.declineReserveTeam();
+            }
+            // Z key pauses game and opens zoo, or gives up from game over
+            else if (e.code === 'KeyZ') {
+                e.preventDefault();
+                if (this.gameState.isGameOver()) {
+                    // Give up from game over - go to zoo and reset
+                    window.open('https://zoo.emilycogsdill.com', '_blank');
+                    this.reset();
+                    if (typeof showInstructions === 'function') {
+                        showInstructions();
+                    }
+                } else if (!this.gameState.isShowingReserveTeamOption()) {
+                    // Normal Z behavior - pause and go to zoo (not during reserve team dialog)
+                    if (this.isRunning) {
+                        this.pause();
+                    }
+                    window.open('https://zoo.emilycogsdill.com', '_blank');
                 }
             }
         });
@@ -119,10 +166,6 @@ class Game {
         this.isRunning = true;
         this.lastTime = performance.now();
         
-        // Hide Play Again button when starting
-        if (typeof hidePlayAgainButton === 'function') {
-            hidePlayAgainButton();
-        }
         
         // Start the game state
         this.gameState.start();
@@ -256,21 +299,11 @@ class Game {
     }
     
     /**
-     * Handle game over - update UI and show Play Again button
+     * Handle game over - pause game loop
      */
     handleGameOver() {
         const finalScore = this.gameState.getFinalScore();
         console.log(`Game Over! Final Score: ${finalScore}`);
-        
-        // Update game info
-        if (typeof updateGameInfo === 'function') {
-            updateGameInfo(`Game Over! Final Score: ${finalScore}`);
-        }
-        
-        // Show Play Again button
-        if (typeof showPlayAgainButton === 'function') {
-            showPlayAgainButton();
-        }
         
         // Pause the game loop
         this.pause();
