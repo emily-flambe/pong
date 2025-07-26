@@ -1,0 +1,6 @@
+name = "pong"
+compatibility_date = "2025-01-01"
+
+# Assets configuration
+[assets]
+directory = "./src/public"

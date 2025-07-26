@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>4-Paddle Pong</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 10px;
+            background-color: #000;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 100vh;
+        }
+
+        #gameCanvas {
+            border: 2px solid #fff;
+            background-color: #000;
+            display: block;
+            margin: 10px 0;
+            transform: scale(0.95);
+        }
+
+        .big-prompt-in-popup {
+            text-align: center;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #333;
+            font-size: 24px;
+            font-weight: bold;
+            color: #4CAF50;
+        }
+        
+        .shortcuts-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            font-size: 12px;
+            color: #FFD700;
+            padding: 5px 10px;
+            z-index: 100;
+        }
+        
+        .shortcuts-bar span {
+            margin-right: 15px;
+        }
+        
+        .shortcuts-bar span:last-child {
+            margin-right: 0;
+        }
+
+        .controls {
+            margin: 10px 0;
+            font-size: 14px;
+            text-align: center;
+            max-width: 600px;
+        }
+
+        .controls p {
+            margin: 5px 0;
+        }
+
+        .control-section {
+            margin: 15px 0;
+            padding: 10px;
+            border: 1px solid #333;
+            border-radius: 4px;
+            background-color: #111;
+        }
+
+        .control-section h4 {
+            margin: 0 0 10px 0;
+            color: #4CAF50;
+            font-size: 16px;
+        }
+
+        .game-description {
+            margin: 15px 0;
+            font-size: 14px;
+            text-align: center;
+            max-width: 600px;
+            line-height: 1.4;
+        }
+
+        .game-title {
+            font-size: 36px;
+            margin-bottom: 5px;
+        }
+        
+        .game-subtitle {
+            font-size: 14px;
+            color: #888;
+            margin-bottom: 15px;
+            font-style: italic;
+        }
+
+        .game-controls {
+            margin-top: 10px;
+        }
+        
+        .instructions-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.95);
+            background-color: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 25px;
+            border: 2px solid #fff;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            line-height: 1.4;
+            z-index: 1000;
+            width: 700px;
+            text-align: left;
+        }
+        
+        .instructions-content {
+            display: flex;
+            gap: 40px;
+            margin-bottom: 10px;
+        }
+        
+        .instructions-column {
+            flex: 1;
+        }
+        
+        .canvas-container {
+            position: relative;
+            display: inline-block;
+            margin-top: 25px;
+        }
+        
+        .instructions-overlay.hidden {
+            display: none;
+        }
+        
+        .instructions-overlay h3 {
+            color: #4CAF50;
+            margin: 0 0 15px 0;
+            font-size: 24px;
+            text-align: center;
+        }
+        
+        .instructions-section {
+            margin-bottom: 15px;
+        }
+        
+        .instructions-section:last-child {
+            margin-bottom: 0;
+        }
+        
+        .instructions-overlay h4 {
+            color: #4CAF50;
+            margin: 0 0 6px 0;
+            font-size: 13px;
+        }
+        
+        .instructions-overlay ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        
+        .instructions-overlay li {
+            margin: 2px 0;
+        }
+
+        button {
+            background-color: #333;
+            color: #fff;
+            border: 1px solid #fff;
+            padding: 8px 16px;
+            margin: 0 5px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        button:hover {
+            background-color: #555;
+        }
+
+        button:active {
+            background-color: #222;
+        }
+
+        .error-message {
+            color: #ff4444;
+            background-color: #330000;
+            padding: 10px;
+            border: 1px solid #ff4444;
+            margin: 10px 0;
+            border-radius: 4px;
+            display: none;
+        }
+        
+        .play-again-container {
+            margin: 10px 0;
+            display: none;
+        }
+        
+        .play-again-container.show {
+            display: block;
+        }
+        
+        #playAgainBtn {
+            background-color: #4CAF50;
+            color: white;
+            border: 2px solid #45a049;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        #playAgainBtn:hover {
+            background-color: #45a049;
+        }
+        
+        #playAgainBtn:active {
+            background-color: #3d8b40;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-title">4-PADDLE PONG</div>
+    <div class="game-subtitle">Premium mindless recreation</div>
+    
+    
+    <div class="canvas-container">
+        <canvas id="gameCanvas" width="800" height="600">
+            Your browser does not support the HTML5 Canvas element.
+        </canvas>
+        
+        <div class="instructions-overlay" id="instructionsOverlay">
+            <h3>CONTROLS</h3>
+            
+            <div class="instructions-content">
+                <div class="instructions-column">
+                    <div class="instructions-section">
+                        <h4>Arrow Keys:</h4>
+                        <ul>
+                            <li>↑↓ Move Left & Right paddles</li>
+                            <li>←→ Move Top & Bottom paddles</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="instructions-section">
+                        <h4>WASD Alternative:</h4>
+                        <ul>
+                            <li>W/S Move Left & Right paddles</li>
+                            <li>A/D Move Top & Bottom paddles</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="instructions-column">
+                    <div class="instructions-section">
+                        <h4>Game Rules:</h4>
+                        <ul>
+                            <li>Start with 3 lives</li>
+                            <li>Lose life when ball hits wall</li>
+                            <li>Score when ball hits paddle</li>
+                            <li>Paddles move in synchronized pairs. Like graceful dolphins</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="big-prompt-in-popup">
+                PRESS ENTER TO BEGIN
+            </div>
+        </div>
+    </div>
+
+    <div class="error-message" id="errorMessage"></div>
+
+    
+    <div class="shortcuts-bar">
+        <span>SPACE to pause</span>
+        <span>ESC to reset</span>
+        <span>Z to go to the zoo</span>
+    </div>
+
+
+    <!-- Game scripts in dependency order -->
+    <script src="GameState.js"></script>
+    <script src="InputHandler.js"></script>
+    <script src="Renderer.js"></script>
+    <script src="game.js"></script>
+
+    <script>
+        // Global game instance
+        let game = null;
+        let debugMode = false;
+
+        /**
+         * Initialize the game when the page loads
+         */
+        function initGame() {
+            try {
+                // Check for required browser APIs
+                if (!document.getElementById('gameCanvas').getContext) {
+                    throw new Error('Canvas API not supported');
+                }
+
+                if (!window.requestAnimationFrame) {
+                    throw new Error('RequestAnimationFrame not supported');
+                }
+
+                // Initialize game instance
+                game = new Game('gameCanvas');
+                
+                console.log('4-Paddle Pong game initialized successfully');
+                // Game initialized - big prompt is already showing
+                
+            } catch (error) {
+                console.error('Failed to initialize game:', error);
+                showError('Failed to initialize game: ' + error.message);
+            }
+        }
+
+        /**
+         * Start the game
+         */
+        function startGame() {
+            if (!game) {
+                initGame();
+                if (!game) return;
+            }
+
+            try {
+                // Hide instructions overlay when game starts
+                hideInstructions();
+                
+                game.start();
+            } catch (error) {
+                console.error('Failed to start game:', error);
+                showError('Failed to start game: ' + error.message);
+            }
+        }
+
+        /**
+         * Reset the game
+         */
+        function resetGame() {
+            if (game) {
+                game.reset();
+                // Show instructions overlay again when game is reset
+                showInstructions();
+            }
+        }
+
+
+
+        /**
+         * Show error message
+         */
+        function showError(message) {
+            const errorElement = document.getElementById('errorMessage');
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+        }
+
+        /**
+         * Hide error message
+         */
+        function hideError() {
+            document.getElementById('errorMessage').style.display = 'none';
+        }
+
+        /**
+         * Hide instructions overlay
+         */
+        function hideInstructions() {
+            document.getElementById('instructionsOverlay').classList.add('hidden');
+        }
+
+        /**
+         * Show instructions overlay
+         */
+        function showInstructions() {
+            document.getElementById('instructionsOverlay').classList.remove('hidden');
+        }
+
+
+        // Initialize game when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, initializing game...');
+            initGame();
+        });
+
+        // Handle browser compatibility
+        window.addEventListener('load', function() {
+            // Ensure canvas has focus for keyboard input
+            const canvas = document.getElementById('gameCanvas');
+            if (canvas) {
+                canvas.focus();
+            }
+        });
+
+        // Global error handler for unhandled errors
+        window.addEventListener('error', function(event) {
+            console.error('Global error:', event.error);
+            showError('An unexpected error occurred. Check console for details.');
+        });
+    </script>
+</body>
+</html>
