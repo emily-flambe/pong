@@ -5,15 +5,15 @@
 
 # Deploy to Cloudflare Workers
 deploy:
-	cd src && npx wrangler deploy --env=""
+	npx wrangler deploy --env=""
 
 # Start development server
 dev:
-	cd src && npx wrangler dev
+	npx wrangler dev
 
 # Clean build artifacts
 clean:
-	cd src && rm -rf .wrangler/
+	rm -rf .wrangler/
 
 # Show help
 help:
