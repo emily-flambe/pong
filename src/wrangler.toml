@@ -1,12 +1,12 @@
 name = "pong"
 compatibility_date = "2025-01-01"
 
-# Assets configuration
-[assets]
-directory = "./public"
-
-# Custom domain routes (top-level)
+# Custom domain routes
 routes = [
   { pattern = "pong.emilycogsdill.com", custom_domain = true, zone_name = "emilycogsdill.com" }
 ]
+
+# Assets configuration
+[assets]
+directory = "./public"
 
