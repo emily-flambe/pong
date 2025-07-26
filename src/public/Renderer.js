@@ -344,12 +344,12 @@ class Renderer {
         this.ctx.fillStyle = 'rgba(0, 0, 0, 0.85)';
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
         
-        // Game Over text
-        this.ctx.fillStyle = '#FFFFFF';
-        this.ctx.font = 'bold 48px monospace';
+        // Game Over text - GTA style "WASTED"
+        this.ctx.fillStyle = '#FF0000';
+        this.ctx.font = 'bold 64px monospace';
         this.ctx.textAlign = 'center';
         this.ctx.textBaseline = 'middle';
-        this.ctx.fillText('GAME OVER', this.canvas.width / 2, this.canvas.height / 2 - 100);
+        this.ctx.fillText('WASTED', this.canvas.width / 2, this.canvas.height / 2 - 100);
         
         // Final Score text
         this.ctx.font = '32px monospace';

@@ -55,6 +55,20 @@ class Game {
                 e.preventDefault();
             }
         });
+        
+        // Add global keyboard listeners for game control
+        document.addEventListener('keydown', (e) => {
+            // Enter key starts the game
+            if (e.code === 'Enter' && !this.isRunning && !this.gameState.isGameOver()) {
+                e.preventDefault();
+                this.start();
+            }
+            // Spacebar pauses/resumes the game
+            else if (e.code === 'Space' && this.isRunning) {
+                e.preventDefault();
+                this.pause();
+            }
+        });
 
         // Make canvas focusable for keyboard events
         this.canvas.tabIndex = 0;
@@ -274,8 +288,8 @@ class Game {
         window.removeEventListener('resize', this.handleResize);
         
         // Clean up input handler
-        if (this.inputHandler && typeof this.inputHandler.destroy === 'function') {
-            this.inputHandler.destroy();
+        if (this.inputHandler && typeof this.inputHandler.cleanup === 'function') {
+            this.inputHandler.cleanup();
         }
 
         console.log('Game destroyed');

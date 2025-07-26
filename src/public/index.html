@@ -157,6 +157,7 @@
             <p>• Lose a life when ball hits any wall</p>
             <p>• Score +1 point when ball hits any paddle</p>
             <p>• All paddles move together in synchronized pairs</p>
+            <p>• ENTER key starts game, SPACEBAR pauses</p>
         </div>
     </div>
 
@@ -167,7 +168,7 @@
     <div class="error-message" id="errorMessage"></div>
 
     <div class="game-info">
-        <p>Press Start to begin your 4-paddle challenge!</p>
+        <p>Press Start or ENTER to begin your 4-paddle challenge!</p>
     </div>
 
     <div class="play-again-container" id="playAgainContainer">
@@ -210,7 +211,7 @@
                 game = new Game('gameCanvas');
                 
                 console.log('4-Paddle Pong game initialized successfully');
-                updateGameInfo('4-Paddle Pong ready. Press Start to play!');
+                updateGameInfo('4-Paddle Pong ready. Press Start or ENTER to play!');
                 
             } catch (error) {
                 console.error('Failed to initialize game:', error);
@@ -253,7 +254,7 @@
         function resetGame() {
             if (game) {
                 game.reset();
-                updateGameInfo('4-Paddle Pong reset. Press Start to play!');
+                updateGameInfo('4-Paddle Pong reset. Press Start or ENTER to play!');
                 document.getElementById('startBtn').textContent = 'Start';
             }
         }
