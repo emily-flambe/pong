@@ -1,0 +1,11 @@
+name = "pong-game"
+compatibility_date = "2025-01-01"
+
+[assets]
+directory = "./public"
+
+[[env.production]]
+name = "pong-game-prod"
+
+[[env.staging]]
+name = "pong-game-staging"
