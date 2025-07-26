@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pong Game</title>
+    <title>4-Paddle Pong</title>
     <style>
         body {
             margin: 0;
@@ -34,10 +34,33 @@
             margin: 10px 0;
             font-size: 14px;
             text-align: center;
+            max-width: 600px;
         }
 
         .controls p {
             margin: 5px 0;
+        }
+
+        .control-section {
+            margin: 15px 0;
+            padding: 10px;
+            border: 1px solid #333;
+            border-radius: 4px;
+            background-color: #111;
+        }
+
+        .control-section h4 {
+            margin: 0 0 10px 0;
+            color: #4CAF50;
+            font-size: 16px;
+        }
+
+        .game-description {
+            margin: 15px 0;
+            font-size: 14px;
+            text-align: center;
+            max-width: 600px;
+            line-height: 1.4;
         }
 
         .game-title {
@@ -108,12 +131,33 @@
     </style>
 </head>
 <body>
-    <div class="game-title">PONG</div>
+    <div class="game-title">4-PADDLE PONG</div>
+    
+    <div class="game-description">
+        <p><strong>Challenge yourself with 4 synchronized paddles!</strong></p>
+        <p>Control all four paddles simultaneously to keep the ball in play. You have 3 lives - lose one each time the ball hits a wall. Score points when the ball hits any paddle!</p>
+    </div>
     
     <div class="controls">
-        <p><strong>Controls:</strong></p>
-        <p>↑ Up Arrow - Move paddle up</p>
-        <p>↓ Down Arrow - Move paddle down</p>
+        <div class="control-section">
+            <h4>Arrow Keys Control:</h4>
+            <p>↑↓ Up/Down Arrows - Move Left & Right paddles vertically</p>
+            <p>←→ Left/Right Arrows - Move Top & Bottom paddles horizontally</p>
+        </div>
+        
+        <div class="control-section">
+            <h4>WASD Alternative:</h4>
+            <p>W/S Keys - Move Left & Right paddles vertically</p>
+            <p>A/D Keys - Move Top & Bottom paddles horizontally</p>
+        </div>
+        
+        <div class="control-section">
+            <h4>Game Rules:</h4>
+            <p>• Start with 3 lives</p>
+            <p>• Lose a life when ball hits any wall</p>
+            <p>• Score +1 point when ball hits any paddle</p>
+            <p>• All paddles move together in synchronized pairs</p>
+        </div>
     </div>
 
     <canvas id="gameCanvas" width="800" height="600">
@@ -123,7 +167,7 @@
     <div class="error-message" id="errorMessage"></div>
 
     <div class="game-info">
-        <p>Press Start to begin playing</p>
+        <p>Press Start to begin your 4-paddle challenge!</p>
     </div>
 
     <div class="play-again-container" id="playAgainContainer">
@@ -165,8 +209,8 @@
                 // Initialize game instance
                 game = new Game('gameCanvas');
                 
-                console.log('Pong game initialized successfully');
-                updateGameInfo('Game ready. Press Start to play.');
+                console.log('4-Paddle Pong game initialized successfully');
+                updateGameInfo('4-Paddle Pong ready. Press Start to play!');
                 
             } catch (error) {
                 console.error('Failed to initialize game:', error);
@@ -185,7 +229,7 @@
 
             try {
                 game.start();
-                updateGameInfo('Game running. Use arrow keys to control paddle.');
+                updateGameInfo('4-Paddle Pong running! Use arrow keys or WASD to control all paddles.');
                 document.getElementById('startBtn').textContent = 'Resume';
             } catch (error) {
                 console.error('Failed to start game:', error);
@@ -199,7 +243,7 @@
         function pauseGame() {
             if (game) {
                 game.pause();
-                updateGameInfo('Game paused. Press Resume to continue.');
+                updateGameInfo('4-Paddle Pong paused. Press Resume to continue.');
             }
         }
 
@@ -209,7 +253,7 @@
         function resetGame() {
             if (game) {
                 game.reset();
-                updateGameInfo('Game reset. Press Start to play.');
+                updateGameInfo('4-Paddle Pong reset. Press Start to play!');
                 document.getElementById('startBtn').textContent = 'Start';
             }
         }
@@ -233,7 +277,7 @@
                 game.reset();
                 game.start();
                 hidePlayAgainButton();
-                updateGameInfo('Game restarted! Use arrow keys to control paddle.');
+                updateGameInfo('4-Paddle Pong restarted! Use arrow keys or WASD to control all paddles.');
             }
         }
 
