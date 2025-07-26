@@ -1,87 +1,119 @@
-# Pong Game - Phase 4 Integration Complete
+# 4-Paddle Pong
 
-A web-based Pong game implemented with vanilla JavaScript and HTML5 Canvas, featuring a clean 3-layer architecture designed for future multiplayer extensibility.
+A modern implementation of the classic Pong game with a unique 4-paddle twist. Built with vanilla JavaScript and designed for deployment on Cloudflare Workers.
 
-## Implementation Status
+## Features
 
-✅ **Phase 4 - Integration Complete**
-- Main Game class with requestAnimationFrame loop
-- Canvas setup and initialization  
-- deltaTime calculation for consistent physics
-- 3-layer architecture coordination: InputHandler → GameState → Renderer
+### 🎮 Unique Gameplay
+- **4-Paddle System**: Control all four paddles simultaneously with synchronized movement
+- **Lives System**: Start with 3 lives, lose one when the ball hits any wall
+- **Reserve Team**: Get a second chance with increased difficulty when all lives are lost
+- **Progressive Difficulty**: Ball speed increases with each paddle hit
 
-## Architecture
+### 🎯 Game Controls
+- **Arrow Keys**: ↑↓ control left/right paddles, ←→ control top/bottom paddles
+- **WASD Alternative**: W/S for left/right paddles, A/D for top/bottom paddles  
+- **SPACE**: Pause/resume game
+- **ENTER**: Start game or restart from game over
+- **ESC**: Reset game to initial state
+- **Y/N**: Accept/decline reserve team when offered
+- **Z**: Visit the zoo (pauses game or gives up from game over)
 
-The game follows a modular 3-layer architecture:
+### 🛠 Technical Features
+- **Clean Architecture**: Modular design with separate GameState, InputHandler, and Renderer
+- **60fps Performance**: Smooth gameplay with deltaTime-based physics
+- **Network-Ready**: State management designed for future multiplayer support
+- **Responsive Design**: Works across different screen sizes
+
+## Development
+
+### Prerequisites
+- Node.js (for development dependencies)
+- npm or yarn
+- Cloudflare account (for deployment)
+
+### Local Development
+
+```bash
+# Clone the repository
+git clone https://github.com/emily-flambe/pong.git
+cd pong
+
+# Install dependencies
+cd src && npm install
+
+# Start development server
+make dev
+# or
+npx wrangler dev
+```
+
+Visit `http://localhost:8787` to play the game locally.
+
+### Deployment
+
+Deploy to Cloudflare Workers:
+
+```bash
+# Deploy to production
+make deploy
+# or
+npx wrangler deploy
+```
+
+### Available Commands
+
+```bash
+make help     # Show available commands
+make dev      # Start development server  
+make deploy   # Deploy to Cloudflare Workers
+make clean    # Clean build artifacts
+```
+
+## Game Architecture
+
+### 3-Layer Design
+
+1. **GameState** - Pure game logic with no DOM dependencies
+2. **InputHandler** - Keyboard input management with clean state output
+3. **Renderer** - Stateless canvas rendering from game state
+
+This architecture enables:
+- Easy testing and debugging
+- Network synchronization ready
+- Clean separation of concerns
+- Performance optimization
+
+### File Structure
 
 ```
-Game.js (Main Orchestrator)
-├── GameState.js (Pure game logic)
-├── InputHandler.js (Keyboard input)  
-└── Renderer.js (Canvas drawing)
+pong/
+├── src/
+│   └── public/
+│       ├── index.html      # Game UI and canvas setup
+│       ├── game.js         # Main game orchestration
+│       ├── GameState.js    # Core game logic
+│       ├── InputHandler.js # Keyboard input handling
+│       └── Renderer.js     # Canvas rendering
+├── wrangler.toml          # Cloudflare Workers configuration
+├── Makefile              # Build and deployment commands
+└── README.md            # This file
 ```
 
-### Main Game Class Features
+## License
 
-- **Canvas Management**: Automatic canvas setup with proper sizing (800x600)
-- **Game Loop**: 60fps requestAnimationFrame loop with deltaTime calculation
-- **Error Handling**: Comprehensive error handling and browser compatibility checks
-- **Lifecycle Management**: Start, pause, resume, stop, and reset functionality
-- **Browser Events**: Handles visibility changes, window resize, and focus management
-- **Debug Mode**: Optional debug information display (FPS, deltaTime)
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-### Integration Strategy
+## Contributing
 
-1. **Initialization**: Game constructor sets up canvas, initializes all components
-2. **Update Cycle**: InputHandler → GameState.update() → Renderer.render()
-3. **Timing**: Delta time calculation prevents frame-rate dependent physics
-4. **Error Recovery**: Try-catch blocks around critical operations with graceful degradation
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-## File Structure
+## Acknowledgments
 
-```
-/
-├── index.html          # Game entry point with controls
-├── game.js            # Main Game class (IMPLEMENTED)
-├── GameState.js       # Pure game logic (REQUIRED)
-├── InputHandler.js    # Keyboard input handler (REQUIRED)  
-├── Renderer.js        # Canvas rendering (REQUIRED)
-└── README.md         # This file
-```
-
-## Required Dependencies
-
-The main Game class expects these components to be implemented:
-
-- **GameState**: Must have `update(deltaTime, inputState)`, `getState()`, `setState()`, `reset()` methods
-- **InputHandler**: Must have `getInputState()` method returning current input state
-- **Renderer**: Must have `render(gameState)` method for drawing the game
-
-## Usage
-
-1. Open `index.html` in a modern web browser
-2. Click "Start" to begin the game
-3. Use arrow keys to control the paddle
-4. Use control buttons for pause/resume/reset functionality
-
-## Browser Compatibility
-
-- Requires HTML5 Canvas support
-- Requires requestAnimationFrame API
-- Tested on modern browsers (Chrome, Firefox, Safari, Edge)
-
-## Next Steps
-
-With the main Game class complete, implement the remaining components:
-
-1. **GameState.js** - Ball physics, paddle movement, collision detection
-2. **InputHandler.js** - Arrow key input processing  
-3. **Renderer.js** - Canvas drawing operations for ball, paddle, and boundaries
-
-## Debug Features
-
-- Enable debug mode to see FPS and deltaTime information
-- Console logging for game state transitions
-- Error messages displayed in UI for user feedback
-
-The architecture is designed to be network-ready for future multiplayer implementation with Cloudflare Workers and Durable Objects.
+- Inspired by the classic Pong game by Atari
+- Built with modern web technologies for enhanced performance
+- Designed for the Cloudflare Workers platform
