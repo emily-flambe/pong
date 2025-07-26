@@ -119,11 +119,10 @@ class GameState {
   checkCollisions() {
     this.checkWallCollisions();
     this.checkPaddleCollision();
-    this.checkBallReset();
   }
 
   /**
-   * Handles ball collision with top and bottom walls
+   * Handles ball collision with all four walls (single-player mode)
    */
   checkWallCollisions() {
     // Top wall collision
@@ -136,6 +135,18 @@ class GameState {
     if (this.ball.y + this.ball.radius >= this.gameConfig.height) {
       this.ball.y = this.gameConfig.height - this.ball.radius;
       this.ball.velocityY = -Math.abs(this.ball.velocityY);
+    }
+    
+    // Left wall collision (single-player: ball bounces back)
+    if (this.ball.x - this.ball.radius <= 0) {
+      this.ball.x = this.ball.radius;
+      this.ball.velocityX = Math.abs(this.ball.velocityX);
+    }
+    
+    // Right wall collision (behind paddle area)
+    if (this.ball.x + this.ball.radius >= this.gameConfig.width) {
+      this.ball.x = this.gameConfig.width - this.ball.radius;
+      this.ball.velocityX = -Math.abs(this.ball.velocityX);
     }
   }
 
