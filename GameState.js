@@ -145,25 +145,49 @@ class GameState {
   }
 
   /**
-   * Handles ball collision with walls (modified for game over mechanics)
+   * Handles ball collision with walls with added unpredictability
    */
   checkWallCollisions() {
-    // Top wall collision
+    // Top wall collision with slight random variation
     if (this.ball.y - this.ball.radius <= 0) {
       this.ball.y = this.ball.radius;
-      this.ball.velocityY = Math.abs(this.ball.velocityY);
+      
+      // Add slight unpredictability to bounce angle (±15 degrees max)
+      const randomVariation = (Math.random() - 0.5) * (Math.PI / 6); // ±30 degrees / 2
+      const currentSpeed = Math.sqrt(this.ball.velocityX * this.ball.velocityX + this.ball.velocityY * this.ball.velocityY);
+      const currentAngle = Math.atan2(Math.abs(this.ball.velocityY), this.ball.velocityX);
+      const newAngle = currentAngle + randomVariation;
+      
+      this.ball.velocityY = Math.abs(Math.sin(newAngle) * currentSpeed);
+      this.ball.velocityX = Math.cos(newAngle) * currentSpeed * Math.sign(this.ball.velocityX);
     }
     
-    // Bottom wall collision
+    // Bottom wall collision with slight random variation
     if (this.ball.y + this.ball.radius >= this.gameConfig.height) {
       this.ball.y = this.gameConfig.height - this.ball.radius;
-      this.ball.velocityY = -Math.abs(this.ball.velocityY);
+      
+      // Add slight unpredictability to bounce angle (±15 degrees max)
+      const randomVariation = (Math.random() - 0.5) * (Math.PI / 6);
+      const currentSpeed = Math.sqrt(this.ball.velocityX * this.ball.velocityX + this.ball.velocityY * this.ball.velocityY);
+      const currentAngle = Math.atan2(Math.abs(this.ball.velocityY), this.ball.velocityX);
+      const newAngle = currentAngle + randomVariation;
+      
+      this.ball.velocityY = -Math.abs(Math.sin(newAngle) * currentSpeed);
+      this.ball.velocityX = Math.cos(newAngle) * currentSpeed * Math.sign(this.ball.velocityX);
     }
     
-    // Left wall collision (single-player: ball bounces back)
+    // Left wall collision with slight random variation
     if (this.ball.x - this.ball.radius <= 0) {
       this.ball.x = this.ball.radius;
-      this.ball.velocityX = Math.abs(this.ball.velocityX);
+      
+      // Add slight unpredictability to bounce angle (±15 degrees max)
+      const randomVariation = (Math.random() - 0.5) * (Math.PI / 6);
+      const currentSpeed = Math.sqrt(this.ball.velocityX * this.ball.velocityX + this.ball.velocityY * this.ball.velocityY);
+      const currentAngle = Math.atan2(this.ball.velocityY, Math.abs(this.ball.velocityX));
+      const newAngle = currentAngle + randomVariation;
+      
+      this.ball.velocityX = Math.abs(Math.cos(newAngle) * currentSpeed);
+      this.ball.velocityY = Math.sin(newAngle) * currentSpeed;
     }
     
     // Note: Right wall collision removed - ball should pass through to trigger game over
